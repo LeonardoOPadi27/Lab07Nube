@@ -1,0 +1,51 @@
+# =========================
+# DEPENDENCIAS NODE
+# =========================
+node_modules/
+
+# =========================
+# LOGS
+# =========================
+*.log
+logs/
+
+# =========================
+# BASE DE DATOS / ARCHIVOS LOCALES
+# =========================
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+dump/
+backup/
+
+# =========================
+# BUILD / CACHE
+# =========================
+dist/
+build/
+.cache/
+.tmp/
+
+# =========================
+# SISTEMA OPERATIVO
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE / EDITORES
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# PM2 / PRODUCCIÓN NODE
+# =========================
+pm2.log
+ecosystem.config.js
+
+# =========================
+# FRONTEND (si no haces build)
+# =========================
+frontend/node_modules/

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro — LabSystem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0f;
+      --surface:   #111118;
+      --border:    #1e1e2e;
+      --accent:    #6c63ff;
+      --accent-h:  #8b85ff;
+      --text:      #e8e8f0;
+      --muted:     #5a5a72;
+      --error:     #ff5c7a;
+      --success:   #39d98a;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .bg-grid {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(108,99,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,99,255,.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .bg-glow {
+      position: fixed; pointer-events: none; z-index: 0;
+      width: 500px; height: 500px; border-radius: 50%;
+      filter: blur(120px); opacity: 0.14;
+      background: #39d98a;
+      bottom: -100px; right: -100px;
+      animation: drift2 14s ease-in-out infinite alternate;
+    }
+    @keyframes drift2 {
+      from { transform: translate(0, 0); }
+      to   { transform: translate(-60px, -50px); }
+    }
+
+    .page {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .card {
+      width: 100%; max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem 2.25rem;
+      box-shadow: 0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.03);
+      animation: fadeUp .5s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: .6rem;
+      margin-bottom: 2rem;
+    }
+    .brand-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .brand-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.1rem;
+      letter-spacing: -.02em;
+    }
+    .brand-name span { color: var(--accent); }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.7rem; font-weight: 700;
+      letter-spacing: -.03em; margin-bottom: .4rem;
+    }
+    .sub {
+      color: var(--muted); font-size: .875rem; margin-bottom: 2rem;
+    }
+
+    .field { margin-bottom: 1.1rem; }
+    label {
+      display: block; font-size: .78rem; font-weight: 500;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: .08em; margin-bottom: .45rem;
+    }
+    input {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .95rem;
+      padding: .75rem 1rem;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(108,99,255,.15);
+    }
+    input::placeholder { color: var(--muted); }
+
+    /* Password strength */
+    .strength-bar {
+      height: 3px; border-radius: 2px;
+      background: var(--border); margin-top: .5rem;
+      overflow: hidden;
+    }
+    .strength-bar-fill {
+      height: 100%; width: 0; border-radius: 2px;
+      transition: width .3s, background .3s;
+    }
+    .strength-label {
+      font-size: .75rem; color: var(--muted);
+      margin-top: .3rem; min-height: 1em;
+    }
+
+    .btn {
+      width: 100%; margin-top: .5rem;
+      background: var(--accent);
+      color: #fff; border: none; border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: .95rem; font-weight: 600;
+      padding: .8rem;
+      cursor: pointer;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 20px rgba(108,99,255,.35);
+    }
+    .btn:hover { background: var(--accent-h); box-shadow: 0 6px 28px rgba(108,99,255,.5); }
+    .btn:active { transform: scale(.98); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    #toast {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: .7rem 1.2rem;
+      font-size: .875rem; font-weight: 500;
+      display: flex; align-items: center; gap: .5rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s, transform .3s;
+      white-space: nowrap; z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.error   { border-color: var(--error);   color: var(--error); }
+    #toast.success { border-color: var(--success);  color: var(--success); }
+
+    .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+    .footer-link {
+      text-align: center; margin-top: 1.6rem;
+      font-size: .85rem; color: var(--muted);
+    }
+    .footer-link a {
+      color: var(--accent); text-decoration: none; font-weight: 500;
+    }
+    .footer-link a:hover { color: var(--accent-h); }
+  </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<div class="page">
+  <div class="card">
+
+    <div class="brand">
+      <div class="brand-icon">⚗️</div>
+      <div class="brand-name">Lab<span>System</span></div>
+    </div>
+
+    <h1>Crear cuenta</h1>
+    <p class="sub">Únete al sistema de laboratorio</p>
+
+    <div class="field">
+      <label for="name">Nombre completo</label>
+      <input id="name" type="text" placeholder="Tu nombre" autocomplete="name"/>
+    </div>
+
+    <div class="field">
+      <label for="email">Correo electrónico</label>
+      <input id="email" type="email" placeholder="usuario@lab.com" autocomplete="email"/>
+    </div>
+
+    <div class="field">
+      <label for="password">Contraseña</label>
+      <input id="password" type="password" placeholder="Mínimo 6 caracteres"
+             autocomplete="new-password" oninput="checkStrength(this.value)"/>
+      <div class="strength-bar"><div class="strength-bar-fill" id="strengthFill"></div></div>
+      <div class="strength-label" id="strengthLabel"></div>
+    </div>
+
+    <button class="btn" id="registerBtn" onclick="register()">Crear cuenta</button>
+
+    <div class="divider"></div>
+
+    <div class="footer-link">
+      ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="app.js"></script>
+<script>
+  function checkStrength(val) {
+    const fill = document.getElementById('strengthFill');
+    const label = document.getElementById('strengthLabel');
+    if (!val) { fill.style.width = '0'; label.textContent = ''; return; }
+    let score = 0;
+    if (val.length >= 6) score++;
+    if (val.length >= 10) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^a-zA-Z0-9]/.test(val)) score++;
+    const levels = [
+      { w: '20%',  bg: '#ff5c7a', txt: 'Muy débil' },
+      { w: '40%',  bg: '#ff8c42', txt: 'Débil' },
+      { w: '60%',  bg: '#ffd166', txt: 'Regular' },
+      { w: '80%',  bg: '#6c63ff', txt: 'Buena' },
+      { w: '100%', bg: '#39d98a', txt: 'Excelente' },
+    ];
+    const lvl = levels[Math.min(score - 1, 4)] || levels[0];
+    fill.style.width = lvl.w;
+    fill.style.background = lvl.bg;
+    label.textContent = lvl.txt;
+    label.style.color = lvl.bg;
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') register(); });
+</script>
+</body>
+</html>

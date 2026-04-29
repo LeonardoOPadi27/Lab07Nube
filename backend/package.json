@@ -1,0 +1,19 @@
+{
+  "name": "lab07",
+  "version": "1.0.0",
+  "description": "Login + CRUD con Node y MySQL",
+"main": "backend/index.js",
+"scripts": {
+  "start": "node backend/index.js"
+},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.22.3"
+  }
+}
